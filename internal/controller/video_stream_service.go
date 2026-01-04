@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	pb "api-gateway/internal/gen"
+	pb "api-gateway/pkg/gen"
 	"go.uber.org/zap"
 )
 

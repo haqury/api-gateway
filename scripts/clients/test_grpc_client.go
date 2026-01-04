@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	pb "api-gateway/internal/gen"
+	pb "api-gateway/pkg/gen"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

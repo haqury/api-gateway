@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 
 	"api-gateway/internal/controller"
-	gen "api-gateway/internal/gen"
+	gen "api-gateway/pkg/gen"
 )
 
 // VideoStreamHandler обрабатывает HTTP запросы для видеостримов

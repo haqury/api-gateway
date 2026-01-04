@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"api-gateway/internal/controller"
-	pb "api-gateway/internal/gen"
+	pb "api-gateway/pkg/gen"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
