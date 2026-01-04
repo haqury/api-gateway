@@ -8,7 +8,7 @@ import (
 	"go.uber.org/zap"
 
 	"api-gateway/internal/controller"
-	pb "api-gateway/internal/gen"
+	pb "api-gateway/pkg/gen"
 )
 
 // ClientInfoHandler обрабатывает запросы к информации о клиентах

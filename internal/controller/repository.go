@@ -4,8 +4,8 @@ import (
 	"sync"
 	"time"
 
-	pb "api-gateway/internal/gen"
-	videopb "api-gateway/internal/gen"
+	pb "api-gateway/pkg/gen"
+	videopb "api-gateway/pkg/gen"
 )
 
 // ClientRepository - репозиторий для клиентов (in-memory)

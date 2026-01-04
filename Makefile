@@ -11,7 +11,7 @@ COMMIT_HASH = $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 BUILD_DATE = $(shell date -u '+%Y-%m-%d_%H:%M:%S')
 PROTOC_IMAGE = local/protoc-go:latest
 PROTO_ROOT = pkg/proto
-GEN_DIR = internal/gen
+GEN_DIR = pkg/gen
 
 # Главная цель по умолчанию
 .DEFAULT_GOAL := help
@@ -125,7 +125,7 @@ proto-pkg-script:
 
 proto-clean:
 	@echo "🧹 Cleaning generated files..."
-	@if exist "internal\gen" rmdir /s /q "internal\gen" 2>nul || rm -rf internal/gen
+	@if exist "internal\gen" rmdir /s /q "internal\gen" 2>nul || rm -rf pkg/gen
 	@if exist "pkg\gen" rmdir /s /q "pkg\gen" 2>nul || rm -rf pkg/gen
 	@echo "✅ Clean complete"
 
