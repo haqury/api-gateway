@@ -8,6 +8,7 @@
 *.so
 *.dylib
 *.out
+complete_diagnostic.sh
 
 # 🐳 Docker
 Dockerfile
