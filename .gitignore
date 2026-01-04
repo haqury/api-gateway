@@ -8,7 +8,6 @@
 *.so
 *.dylib
 *.out
-complete_diagnostic.sh
 
 # 🐳 Docker
 Dockerfile
@@ -23,11 +22,6 @@ docker-compose.override.yml
 # Go workspace файл
 go.work
 go.work.sum
-
-# 📦 Go модули (кэш и временные файлы)
-/go.mod
-/go.sum
-/pkg/
 
 # 🐙 Go тесты и ковер
 *.test

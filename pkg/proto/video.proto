@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package video_stream;
+option go_package = "api-gateway/internal/gen";
+
+import "common.proto";
+
+// Пустой запрос
+message EmptyRequest {}
+
+// Видео чанк для потоковой передачи
+message VideoChunk {
+  string stream_id = 1;
+  string client_id = 2;
+  bytes data = 3;          // Бинарные данные кадра
+  int64 timestamp = 4;
+  int32 sequence = 5;      // Порядковый номер кадра
+  bool is_key_frame = 6;   // Ключевой кадр
+  map<string, string> metadata = 7;
+}
+
+// Ответ на чанк
+message ChunkAck {
+  string status = 1;
+  string message = 2;
+  int64 received_at = 3;
+  int32 next_expected = 4;
+  float processing_time_ms = 5;
+}
+
+// Запросы для REST API (обратная совместимость)
+message VideoFrame {
+  string frame_id = 1;
+  bytes frame_data = 2;  // base64 encoded JPEG
+  int64 timestamp = 3;
+  string camera_id = 4;
+  string client_id = 5;
+  int32 width = 6;
+  int32 height = 7;
+  string format = 8;
+  map<string, string> metadata = 9;
+}
+
+message StartStreamRequest {
+  string client_id = 1;
+  string user_id = 2;
+  string camera_name = 3;
+  string filename = 4;
+}
+
+message StartStreamResponse {
+  string stream_id = 1;
+  string status = 2;
+  string message = 3;
+}
+
+message SendFrameRequest {
+  string stream_id = 1;
+  VideoFrame frame = 2;
+  string client_id = 3;
+  string user_name = 4;
+}
+
+message StopStreamRequest {
+  string stream_id = 1;
+  string client_id = 2;
+  string filename = 3;
+  int64 end_time = 4;
+  int64 file_size = 5;
+}
+
+// Для мониторинга
+message StreamStats {
+  string stream_id = 1;
+  string client_id = 2;
+  int64 start_time = 3;
+  int64 duration = 4;
+  int64 frames_received = 5;
+  int64 bytes_received = 6;
+  float average_fps = 7;
+  float current_fps = 8;
+  int32 width = 9;
+  int32 height = 10;
+  string codec = 11;
+  bool is_recording = 12;
+  bool is_streaming = 13;
+}
+
+message ActiveStream {
+  string stream_id = 1;
+  string client_id = 2;
+  string user_name = 3;
+  string camera_name = 4;
+  bool is_recording = 5;
+  bool is_streaming = 6;
+}
+
+message GetStreamStatsRequest {
+  string stream_id = 1;
+  string client_id = 2;
+}
+
+// Сервис для видео стримов
+service VideoStreamService {
+  // Два режима для видео:
+  // 1. Потоковая передача (рекомендуется для gRPC)
+  rpc StreamVideo(stream VideoChunk) returns (stream ChunkAck);
+  
+  // 2. Отдельные кадры (для обратной совместимости)
+  rpc SendFrame(SendFrameRequest) returns (common.ApiResponse);
+  
+  // Общие методы (доступны через gRPC и HTTP)
+  rpc StartStream(StartStreamRequest) returns (StartStreamResponse);
+  rpc StopStream(StopStreamRequest) returns (common.ApiResponse);
+  rpc GetActiveStreams(EmptyRequest) returns (stream ActiveStream);
+  rpc GetStreamStats(GetStreamStatsRequest) returns (StreamStats);
+}
