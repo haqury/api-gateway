@@ -1,0 +1,30 @@
+host: localhost
+port: 8080
+grpc_port: 9090
+
+database:
+  host: localhost
+  port: 5432
+  user: postgres
+  password: postgres
+  name: api_gateway
+  ssl_mode: disable
+
+redis:
+  host: localhost
+  port: 6379
+  password: ""
+  db: 0
+
+jwt:
+  secret: "your-secret-key-change-in-production"
+  expiration: 24
+
+logging:
+  level: info
+  format: json
+
+video:
+  max_frame_size: 10485760  # 10MB
+  max_fps: 30
+  codec: h264

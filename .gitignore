@@ -1,0 +1,215 @@
+# 🔥 Бинарные файлы и исполняемые файлы
+/bin/
+/api-gateway
+/api-gateway.exe
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.out
+
+# 🐳 Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.override.yml
+*.dockerfile
+
+# 🏗️ Go
+# Исключаем vendor если используете модули
+/vendor/
+# Go workspace файл
+go.work
+go.work.sum
+
+# 📦 Go модули (кэш и временные файлы)
+/go.mod
+/go.sum
+/pkg/
+
+# 🐙 Go тесты и ковер
+*.test
+*.test.exe
+*.cover
+*.coverprofile
+coverage.out
+coverage.html
+coverage.txt
+profile.out
+
+# 🗃️ Базы данных и кэш
+*.db
+*.sqlite
+*.sqlite3
+redis-data/
+postgres-data/
+*.dump
+*.backup
+
+# 🔐 Конфигурационные файлы (содержащие секреты)
+config/local.yaml
+config/dev.yaml
+config/prod.yaml
+*.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+secrets.yaml
+secrets.json
+
+# 📁 IDE и редакторы
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# 📊 Логи
+*.log
+logs/
+log/
+*.pid
+
+# 🎥 Видео и медиа файлы (для тестов)
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+test_videos/
+temp_videos/
+uploads/
+tmp/
+
+# 📈 Профилирование и бенчмарки
+cpu.prof
+mem.prof
+block.prof
+mutex.prof
+trace.out
+bench.out
+
+# 🧪 Тестовые данные
+test_data/
+fixtures/
+*.testdata
+
+# 🚀 Сборки и дистрибутивы
+dist/
+build/
+release/
+*.tar.gz
+*.zip
+
+# 📄 Документация (сгенерированная)
+docs/build/
+docs/public/
+site/
+
+# 🔧 Прото файлы (сгенерированный код)
+**/*.pb.go
+**/*.pb.gw.go
+**/gen/
+!pkg/proto/
+
+# 🧹 Временные файлы
+temp/
+tmp/
+.temp/
+.tmp/
+
+# 🐍 Python (если есть Python клиенты)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# 🔌 Node.js (если есть фронтенд)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.lock-wscript
+.nyc_output
+.grunt
+bower_components
+.cache/
+.parcel-cache/
+
+# 📱 Мобильные приложения (если будут)
+*.ipa
+*.apk
+*.dSYM.zip
+*.dSYM
+
+# 🎨 Фронтенд сборки
+dist/
+build/
+.next/
+out/
+.nuxt/
+.cache/
+
+# 📊 Базы данных (локальные)
+data/
+*.db-journal
+*.sqlite3-journal
+.wal
+.shm
+
+# 🖼️ Изображения и медиа
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.ico
+*.svg
+
+# 📚 Документы
+*.pdf
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+
+# 🔍 Исключения (что нужно коммитить)
+!pkg/proto/*.proto
+!config/config.example.yaml
+!README.md
+!LICENSE
+!Makefile
+!go.mod
+!go.sum
+
+# 🌐 Веб-ассеты (если есть)
+/public/
+/static/
+/assets/
+
+# 📝 Специфичные для проекта
+# Добавьте сюда специфичные для вашего проекта пути

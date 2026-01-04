@@ -1,0 +1,81 @@
+package config
+
+import (
+    "os"
+    "strconv"
+    "sync"
+)
+
+// Config содержит конфигурацию приложения
+type Config struct {
+    Port         int
+    Host         string
+    Debug        bool
+    DBConnection string
+    RedisURL     string
+    LogLevel     string
+}
+
+var (
+    configInstance *Config
+    configOnce     sync.Once
+)
+
+// LoadConfig загружает конфигурацию из переменных окружения
+func LoadConfig() *Config {
+    port := 8080
+    if envPort := os.Getenv("PORT"); envPort != "" {
+        if p, err := strconv.Atoi(envPort); err == nil {
+            port = p
+        }
+    }
+
+    host := os.Getenv("HOST")
+    if host == "" {
+        host = "0.0.0.0"
+    }
+
+    debug := false
+    if envDebug := os.Getenv("DEBUG"); envDebug != "" {
+        debug = envDebug == "true"
+    }
+
+    dbConnection := os.Getenv("DB_CONNECTION")
+    if dbConnection == "" {
+        dbConnection = "postgres://user:pass@localhost:5432/db"
+    }
+
+    redisURL := os.Getenv("REDIS_URL")
+    if redisURL == "" {
+        redisURL = "redis://localhost:6379"
+    }
+
+    logLevel := os.Getenv("LOG_LEVEL")
+    if logLevel == "" {
+        logLevel = "info"
+    }
+
+    return &Config{
+        Port:         port,
+        Host:         host,
+        Debug:        debug,
+        DBConnection: dbConnection,
+        RedisURL:     redisURL,
+        LogLevel:     logLevel,
+    }
+}
+
+// GetConfig возвращает конфигурацию (синглтон)
+func GetConfig() *Config {
+    configOnce.Do(func() {
+        configInstance = LoadConfig()
+    })
+    return configInstance
+}
+
+// LoadConfigFromFile загружает конфигурацию из файла
+func LoadConfigFromFile(configPath string) (*Config, error) {
+    // Упрощенная версия без viper
+    // Просто используем LoadConfig как fallback
+    return LoadConfig(), nil
+}
