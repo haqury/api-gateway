@@ -3,7 +3,8 @@ syntax = "proto3";
 package client_info;
 option go_package = "api-gateway/pkg/gen";
 
-import "common.proto";
+// Импортируем common.proto из helpy репозитория
+import "github.com/haqury/helpy/common.proto";
 
 // Информация о клиенте
 message ClientInfo {

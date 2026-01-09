@@ -6,8 +6,8 @@ echo "==========================================="
 
 # Пути
 PROTO_ROOT="pkg/proto"
-OUTPUT_DIR="internal/gen"
-INCLUDE_DIRS="-I ${PROTO_ROOT} -I /include"
+OUTPUT_DIR="pkg/gen"
+INCLUDE_DIRS="-I ${PROTO_ROOT} -I vendor -I /include"
 
 # Если переданы аргументы, используем их
 if [ $# -gt 0 ]; then
@@ -17,6 +17,7 @@ else
     # Автоматическая генерация
     echo "Proto root: ${PROTO_ROOT}"
     echo "Output dir: ${OUTPUT_DIR}"
+    echo "Include dirs: ${INCLUDE_DIRS}"
     echo ""
 
     # Создаем выходную директорию

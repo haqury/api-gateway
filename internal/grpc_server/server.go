@@ -10,6 +10,8 @@ import (
 
 	"api-gateway/internal/controller"
 	pb "api-gateway/pkg/gen"
+
+	helpy "github.com/haqury/helpy"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -155,7 +157,7 @@ func (s *VideoStreamServer) StreamVideo(
 func (s *VideoStreamServer) SendFrame(
 	ctx context.Context,
 	req *pb.SendFrameRequest,
-) (*pb.ApiResponse, error) {
+) (*helpy.ApiResponse, error) {
 	s.logger.Info("gRPC SendFrame called",
 		zap.String("stream_id", req.StreamId),
 		zap.String("client_id", req.ClientId))
@@ -176,7 +178,7 @@ func (s *VideoStreamServer) StartStream(
 func (s *VideoStreamServer) StopStream(
 	ctx context.Context,
 	req *pb.StopStreamRequest,
-) (*pb.ApiResponse, error) {
+) (*helpy.ApiResponse, error) {
 	return s.service.StopStream(ctx, req)
 }
 

@@ -5,6 +5,8 @@ import (
 	"time"
 
 	pb "api-gateway/pkg/gen"
+
+	helpy "github.com/haqury/helpy"
 	"go.uber.org/zap"
 )
 
@@ -23,7 +25,7 @@ func NewClientInfoService(logger *zap.Logger) *ClientInfoServiceImpl {
 }
 
 // ClientConnected - клиент подключился
-func (s *ClientInfoServiceImpl) ClientConnected(ctx context.Context, req *pb.ConnectionEvent) (*pb.ApiResponse, error) {
+func (s *ClientInfoServiceImpl) ClientConnected(ctx context.Context, req *pb.ConnectionEvent) (*helpy.ApiResponse, error) {
 	s.logger.Info("Client connected",
 		zap.String("client_id", req.ClientId),
 		zap.String("ip", req.IpAddress))
@@ -31,7 +33,7 @@ func (s *ClientInfoServiceImpl) ClientConnected(ctx context.Context, req *pb.Con
 	// Сохраняем клиента
 	s.repo.SaveClient(req.ClientInfo)
 
-	return &pb.ApiResponse{
+	return &helpy.ApiResponse{
 		Status:    "ok",
 		Message:   "Client connected successfully",
 		Timestamp: time.Now().Unix(),
@@ -39,14 +41,14 @@ func (s *ClientInfoServiceImpl) ClientConnected(ctx context.Context, req *pb.Con
 }
 
 // ClientDisconnected - клиент отключился
-func (s *ClientInfoServiceImpl) ClientDisconnected(ctx context.Context, req *pb.ConnectionEvent) (*pb.ApiResponse, error) {
+func (s *ClientInfoServiceImpl) ClientDisconnected(ctx context.Context, req *pb.ConnectionEvent) (*helpy.ApiResponse, error) {
 	s.logger.Info("Client disconnected",
 		zap.String("client_id", req.ClientId))
 
 	// Удаляем или обновляем статус
 	s.repo.RemoveClient(req.ClientId)
 
-	return &pb.ApiResponse{
+	return &helpy.ApiResponse{
 		Status:    "ok",
 		Message:   "Client disconnected",
 		Timestamp: time.Now().Unix(),
@@ -54,7 +56,7 @@ func (s *ClientInfoServiceImpl) ClientDisconnected(ctx context.Context, req *pb.
 }
 
 // UpdateClientInfo - обновить информацию о клиенте
-func (s *ClientInfoServiceImpl) UpdateClientInfo(ctx context.Context, req *pb.UpdateClientRequest) (*pb.ApiResponse, error) {
+func (s *ClientInfoServiceImpl) UpdateClientInfo(ctx context.Context, req *pb.UpdateClientRequest) (*helpy.ApiResponse, error) {
 	s.logger.Info("Updating client info",
 		zap.String("client_id", req.ClientId))
 
@@ -62,7 +64,7 @@ func (s *ClientInfoServiceImpl) UpdateClientInfo(ctx context.Context, req *pb.Up
 		s.repo.SaveClient(req.ClientInfo)
 	}
 
-	return &pb.ApiResponse{
+	return &helpy.ApiResponse{
 		Status:    "ok",
 		Message:   "Client info updated",
 		Timestamp: time.Now().Unix(),

@@ -7,6 +7,7 @@ import (
 	"api-gateway/internal/app"
 	"api-gateway/internal/config"
 	"api-gateway/internal/grpc_server"
+
 	"go.uber.org/zap"
 )
 
@@ -34,7 +35,10 @@ func runServerCommand(debug bool, configPath string, grpcPort string) error {
 	}
 
 	// Создание приложения
-	application := app.NewApplicationWithConfig(cfg, logger)
+	application, err := app.NewApplicationWithConfig(cfg, logger)
+	if err != nil {
+		return fmt.Errorf("failed to create application: %v", err)
+	}
 
 	// Создание gRPC сервера
 	videoService := app.GetVideoStreamService(application)

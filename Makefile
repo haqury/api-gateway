@@ -1,7 +1,7 @@
 .PHONY: help init build run run-dev migrate migrate-create worker test test-api test-db \
         version clean proto proto-all proto-clean proto-help lint vet fmt docker-build \
         docker-run docker-compose-up docker-compose-down install-deps health-check \
-        deps-update generate-docs bench load-test security-check dev
+        deps generate-docs bench load-test security-check dev
 
 # Конфигурация
 APP_NAME = api-gateway
@@ -67,65 +67,12 @@ proto-generate:
 	@echo "🔧 Generating Go code from shared proto files..."
 	docker run --rm \
 		-v "$(CURDIR):/workspace" \
+		-v "$(CURDIR)/vendor:/workspace/vendor:ro" \
 		$(PROTOC_IMAGE)
 	@echo "✅ Proto files generated"
 
-proto-pkg:
-	@echo "🚀 Generating for external services (in pkg/gen/)..."
-	@mkdir -p pkg/gen
-	@echo "Using Docker image: $(PROTOC_IMAGE)"
-	@docker run --rm \
-		-v "$(CURDIR):/workspace" \
-		$(PROTOC_IMAGE) \
-		sh -c ' \
-			echo "Finding proto files..." && \
-			find pkg/proto -name "*.proto" | while read f; do \
-				echo "Processing $$f" && \
-				protoc -I pkg/proto -I /include \
-					--go_out=pkg/gen \
-					--go_opt=paths=source_relative \
-					--go-grpc_out=pkg/gen \
-					--go-grpc_opt=paths=source_relative \
-					$$f || exit 1; \
-			done && \
-			echo "✅ Shared library generated in pkg/gen/" \
-		'
-	@echo "✅ Shared library generated"
-
-proto-pkg-simple:
-	@echo "🚀 Generating for external services (simple version)..."
-	@mkdir -p pkg/gen
-	@docker run --rm \
-		-v "$(CURDIR):/workspace" \
-		$(PROTOC_IMAGE) \
-		sh -c 'find pkg/proto -name "*.proto" -exec echo "Processing {}" \; -exec protoc -I pkg/proto -I /include --go_out=pkg/gen --go_opt=paths=source_relative --go-grpc_out=pkg/gen --go-grpc_opt=paths=source_relative {} \;'
-	@echo "✅ Shared library generated in pkg/gen/"
-
-proto-pkg-script:
-	@echo "🚀 Generating via script..."
-	@docker run --rm \
-		-v "$(CURDIR):/workspace" \
-		$(PROTOC_IMAGE) \
-		sh -c ' \
-			PROTO_ROOT="pkg/proto" && \
-			OUTPUT_DIR="pkg/gen" && \
-			mkdir -p $$OUTPUT_DIR && \
-			find $$PROTO_ROOT -name "*.proto" | while read proto_file; do \
-				echo "📁 Processing: $$proto_file" && \
-				protoc -I pkg/proto -I /include \
-					--go_out=$$OUTPUT_DIR \
-					--go_opt=paths=source_relative \
-					--go-grpc_out=$$OUTPUT_DIR \
-					--go-grpc_opt=paths=source_relative \
-					$$proto_file || exit 1; \
-			done && \
-			echo "✅ Done! Check $$OUTPUT_DIR" \
-		'
-	@echo "✅ Generated via script"
-
 proto-clean:
 	@echo "🧹 Cleaning generated files..."
-	@if exist "internal\gen" rmdir /s /q "internal\gen" 2>nul || rm -rf pkg/gen
 	@if exist "pkg\gen" rmdir /s /q "pkg\gen" 2>nul || rm -rf pkg/gen
 	@echo "✅ Clean complete"
 
@@ -246,10 +193,10 @@ install-deps:
 	go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
 	@echo "✅ Dependencies installed"
 
-deps-update:
+deps:
 	@echo "🔄 Updating dependencies..."
-	go get -u ./...
 	go mod tidy
+	go mod vendor
 	@echo "✅ Dependencies updated"
 
 init: install-deps proto

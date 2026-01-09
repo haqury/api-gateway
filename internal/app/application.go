@@ -8,6 +8,7 @@ import (
 
 	"api-gateway/internal/config"
 	"api-gateway/internal/controller"
+	"api-gateway/internal/grpc_client"
 	"api-gateway/internal/handler"
 )
 
@@ -21,13 +22,20 @@ type Application struct {
 	videoStreamService *controller.VideoStreamServiceImpl
 	clientInfoHandler  *handler.ClientInfoHandler
 	videoStreamHandler *handler.VideoStreamHandler
+	userClient         grpc_client.UserServiceClient
 }
 
 // NewApplicationWithConfig создает новое приложение с конфигурацией
-func NewApplicationWithConfig(cfg *config.Config, logger *zap.Logger) *Application {
+func NewApplicationWithConfig(cfg *config.Config, logger *zap.Logger) (*Application, error) {
+	// Создаем gRPC клиент для user-service
+	userClient, err := grpc_client.NewUserServiceClient(cfg, logger)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create user service client: %w", err)
+	}
+
 	// Создаем сервисы
 	clientInfoService := controller.NewClientInfoService(logger)
-	videoStreamService := controller.NewVideoStreamService(logger)
+	videoStreamService := controller.NewVideoStreamService(logger, userClient)
 
 	// Создаем хендлеры
 	clientInfoHandler := handler.NewClientInfoHandler(logger, clientInfoService)
@@ -52,7 +60,8 @@ func NewApplicationWithConfig(cfg *config.Config, logger *zap.Logger) *Applicati
 		videoStreamService: videoStreamService,
 		clientInfoHandler:  clientInfoHandler,
 		videoStreamHandler: videoStreamHandler,
-	}
+		userClient:         userClient,
+	}, nil
 }
 
 // GetVideoStreamService возвращает видеосервис
@@ -70,10 +79,16 @@ func GetConfig(app *Application) *config.Config {
 	return app.config
 }
 
+// GetUserClient возвращает user-service клиент
+func GetUserClient(app *Application) grpc_client.UserServiceClient {
+	return app.userClient
+}
+
 // Start запускает приложение
 func (app *Application) Start() error {
 	app.logger.Info("Starting application",
-		zap.String("address", app.server.Addr))
+		zap.String("address", app.server.Addr),
+		zap.String("user_service", fmt.Sprintf("%s:%d", app.config.UserService.Host, app.config.UserService.Port)))
 
 	return app.server.ListenAndServe()
 }
@@ -81,6 +96,14 @@ func (app *Application) Start() error {
 // Stop останавливает приложение
 func (app *Application) Stop() error {
 	app.logger.Info("Stopping application")
+
+	// Закрываем user-service клиент
+	if app.userClient != nil {
+		if err := app.userClient.Close(); err != nil {
+			app.logger.Error("Failed to close user service client", zap.Error(err))
+		}
+	}
+
 	return app.server.Close()
 }
 

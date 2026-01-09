@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"time"
 
 	"gopkg.in/yaml.v3"
 )
@@ -50,6 +51,16 @@ type Config struct {
 		MaxFPS       int    `yaml:"max_fps"`
 		Codec        string `yaml:"codec"`
 	} `yaml:"video"`
+
+	// User Service gRPC client configuration
+	UserService struct {
+		Host           string        `yaml:"host"`
+		Port           int           `yaml:"port"`
+		DialTimeout    time.Duration `yaml:"dial_timeout"`
+		RequestTimeout time.Duration `yaml:"request_timeout"`
+		MaxRetries     int           `yaml:"max_retries"`
+		RetryDelay     time.Duration `yaml:"retry_delay"`
+	} `yaml:"user_service"`
 }
 
 // LoadConfig загружает конфигурацию из файла
@@ -121,6 +132,21 @@ func GetDefaultConfig() *Config {
 			MaxFrameSize: 10 * 1024 * 1024, // 10MB
 			MaxFPS:       30,
 			Codec:        "h264",
+		},
+		UserService: struct {
+			Host           string        `yaml:"host"`
+			Port           int           `yaml:"port"`
+			DialTimeout    time.Duration `yaml:"dial_timeout"`
+			RequestTimeout time.Duration `yaml:"request_timeout"`
+			MaxRetries     int           `yaml:"max_retries"`
+			RetryDelay     time.Duration `yaml:"retry_delay"`
+		}{
+			Host:           "localhost",
+			Port:           9091, // Порт user-service gRPC
+			DialTimeout:    10 * time.Second,
+			RequestTimeout: 5 * time.Second,
+			MaxRetries:     3,
+			RetryDelay:     1 * time.Second,
 		},
 	}
 }

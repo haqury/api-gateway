@@ -3,7 +3,7 @@ syntax = "proto3";
 package video_stream;
 option go_package = "api-gateway/pkg/gen";
 
-import "common.proto";
+import "github.com/haqury/helpy/common.proto";
 
 // Пустой запрос
 message EmptyRequest {}
@@ -52,6 +52,7 @@ message StartStreamResponse {
   string stream_id = 1;
   string status = 2;
   string message = 3;
+  map<string, string> metadata = 4;
 }
 
 message SendFrameRequest {
@@ -93,6 +94,7 @@ message ActiveStream {
   string camera_name = 4;
   bool is_recording = 5;
   bool is_streaming = 6;
+  map<string, string> metadata = 7;
 }
 
 message GetStreamStatsRequest {
@@ -105,10 +107,10 @@ service VideoStreamService {
   // Два режима для видео:
   // 1. Потоковая передача (рекомендуется для gRPC)
   rpc StreamVideo(stream VideoChunk) returns (stream ChunkAck);
-  
+
   // 2. Отдельные кадры (для обратной совместимости)
   rpc SendFrame(SendFrameRequest) returns (common.ApiResponse);
-  
+
   // Общие методы (доступны через gRPC и HTTP)
   rpc StartStream(StartStreamRequest) returns (StartStreamResponse);
   rpc StopStream(StopStreamRequest) returns (common.ApiResponse);
